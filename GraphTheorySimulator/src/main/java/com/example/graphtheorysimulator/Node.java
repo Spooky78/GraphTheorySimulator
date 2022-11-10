@@ -3,6 +3,7 @@ package com.example.graphtheorysimulator;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 /**
@@ -10,11 +11,13 @@ import javafx.scene.text.Text;
  * @author Spooky78
  */
 public class Node extends Circle {
+    private static boolean isNodeSelected = false;
     private static final int DEFAULT_RADIUS = 20;
     private static final Color DEFAULT_COLOUR = Color.rgb(87, 177, 150);
     private static int defaultNodeIndex = 0;
     private final Text nodeText;
     private final StackPane nodeStack;
+    private Rectangle selectBox;
 
     /**
      * Creates a default node.
@@ -32,6 +35,43 @@ public class Node extends Circle {
         nodeStack.getChildren().addAll(this, nodeText);
         nodeStack.setLayoutX(x - DEFAULT_RADIUS);
         nodeStack.setLayoutY(y - DEFAULT_RADIUS);
+    }
+
+    /**
+     * Draws a box around node which is selected.
+     */
+    public void drawSelectBox() {
+        selectBox = new Rectangle(this.getLayoutX(), this.getLayoutY(), 2 * DEFAULT_RADIUS,
+            2 * DEFAULT_RADIUS);
+        selectBox.setFill(Color.TRANSPARENT);
+        selectBox.setStroke(Color.BLACK);
+        nodeStack.getChildren().add(selectBox);
+        isNodeSelected = true;
+    }
+
+    /**
+     * Removes selection box from scene.
+     */
+    public void deselectNode() {
+        if (isNodeSelected) {
+            nodeStack.getChildren().remove(selectBox);
+        }
+    }
+
+    /**
+     * Returns if node is selected.
+     * @return True if node is selected.
+     */
+    public boolean isNodeSelected() {
+        return isNodeSelected;
+    }
+
+    /**
+     * Return the radius of the node.
+     * @return The radius of node.
+     */
+    public int getNodeRadius() {
+        return DEFAULT_RADIUS;
     }
 
     /**

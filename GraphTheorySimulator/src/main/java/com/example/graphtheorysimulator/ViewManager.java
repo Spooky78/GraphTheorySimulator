@@ -1,8 +1,8 @@
 package com.example.graphtheorysimulator;
 
+import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -19,15 +19,16 @@ import javafx.stage.Stage;
 public class ViewManager {
     private static final int WIDTH = 1024;
     private static final int HEIGHT = 760;
-    private static final int BUTTON_WIDTH = 150;
-    private static final int BUTTON_HEIGHT = 50;
-    private static final int BUTTON_POSITION_X = 50;
-    private static final int BUTTON_POSITION_Y = 50;
+    private static final int BUTTON_LEFT_POSITION_X = 25;
+    private static final int BUTTON_RIGHT_POSITION_X = 150;
+    private static final int BUTTON_POSITION_Y = 25;
     private static final Color BACKGROUND_COLOUR = Color.rgb(232, 232, 231);
     private final AnchorPane mainPane;
     private final Scene mainScene;
     private final Stage mainStage;
     private boolean isDrawingNode = false;
+    private boolean isSelectingNode = false;
+    private ArrayList<Node> nodes = new ArrayList<>();
 
     /**
      * Creates a main menu window.
@@ -46,22 +47,21 @@ public class ViewManager {
      */
     private void createButtons() {
         createDrawNodeButton();
+        createSelectNodeButton();
     }
 
     /**
      * Creates the draw node button.
      */
     private void createDrawNodeButton() {
-        Button drawNodeButton = new Button("Draw Node");
-        drawNodeButton.setLayoutX(BUTTON_POSITION_X);
+        MenuButton drawNodeButton = new MenuButton("Draw Node");
+        drawNodeButton.setLayoutX(BUTTON_LEFT_POSITION_X);
         drawNodeButton.setLayoutY(BUTTON_POSITION_Y);
-        drawNodeButton.setPrefWidth(BUTTON_WIDTH);
-        drawNodeButton.setPrefHeight(BUTTON_HEIGHT);
         mainPane.getChildren().add(drawNodeButton);
         drawNodeButton.setOnAction(actionEvent -> {
-            createMouseListeners();
             isDrawingNode = true;
-            //createNewNode(nodeX, nodeY);
+            isSelectingNode = false;
+            createMouseListenersForNode();
         });
     }
 
@@ -72,20 +72,63 @@ public class ViewManager {
      */
     private void createNewNode(double x, double y) {
         Node currentNode = new Node(x, y);
+        nodes.add(currentNode);
         StackPane nodeStack = currentNode.getNodeStackPane();
         mainPane.getChildren().add(nodeStack);
     }
 
-    private void createMouseListeners() {
+    /**
+     * Draws node where mouse is clicked.
+     */
+    private void createMouseListenersForNode() {
         mainScene.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
                 if (isDrawingNode) {
                     createNewNode(x, y);
+                } else if (isSelectingNode) {
+                    selectNode(x, y);
+                    //selectBox(x, y);
                 }
             }
         });
+    }
+
+    /**
+     * Creates button to select node.
+     */
+    private void createSelectNodeButton() {
+        MenuButton selectNodeButton = new MenuButton("Select Node");
+        selectNodeButton.setLayoutX(BUTTON_RIGHT_POSITION_X);
+        selectNodeButton.setLayoutY(BUTTON_POSITION_Y);
+        mainPane.getChildren().add(selectNodeButton);
+        selectNodeButton.setOnAction(actionEvent -> {
+            isSelectingNode = true;
+            isDrawingNode = false;
+            createMouseListenersForNode();
+        });
+    }
+
+    /**
+     * Select node from ones draw on screen.
+     * @param x The x coordinate of mouse.
+     * @param y The y coordinate of mouse.
+     */
+    private void selectNode(double x, double y) {
+        Node selectedNode;
+        for (Node node : nodes) {
+            node.deselectNode();
+            double layoutX = node.getNodeStackPane().getLayoutX();
+            double layoutY = node.getNodeStackPane().getLayoutY();
+            int radius = node.getNodeRadius();
+            if (x > layoutX && x < layoutX + (2 * radius) && y > layoutY && y < layoutY
+                + (2 * radius)) {
+                selectedNode = node;
+                selectedNode.drawSelectBox();
+
+            }
+        }
     }
 
     /**
