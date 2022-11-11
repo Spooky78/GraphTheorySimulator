@@ -9,6 +9,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -46,18 +47,24 @@ public class ViewManager {
      * Creates the menu buttons.
      */
     private void createButtons() {
-        createDrawNodeButton();
-        createSelectNodeButton();
+        TilePane buttonLayout = new TilePane();
+        buttonLayout.setLayoutX(0);
+        buttonLayout.setLayoutY(0);
+        buttonLayout.setVgap(20);
+        buttonLayout.setHgap(20);
+        buttonLayout.setPrefColumns(2);
+        buttonLayout.setPadding(new Insets(20));
+        createDrawNodeButton(buttonLayout);
+        createSelectNodeButton(buttonLayout);
+        mainPane.getChildren().add(buttonLayout);
     }
 
     /**
      * Creates the draw node button.
      */
-    private void createDrawNodeButton() {
+    private void createDrawNodeButton(TilePane buttonLayout) {
         MenuButton drawNodeButton = new MenuButton("Draw Node");
-        drawNodeButton.setLayoutX(BUTTON_LEFT_POSITION_X);
-        drawNodeButton.setLayoutY(BUTTON_POSITION_Y);
-        mainPane.getChildren().add(drawNodeButton);
+        buttonLayout.getChildren().add(drawNodeButton);
         drawNodeButton.setOnAction(actionEvent -> {
             isDrawingNode = true;
             isSelectingNode = false;
@@ -98,11 +105,9 @@ public class ViewManager {
     /**
      * Creates button to select node.
      */
-    private void createSelectNodeButton() {
+    private void createSelectNodeButton(TilePane buttonLayout) {
         MenuButton selectNodeButton = new MenuButton("Select Node");
-        selectNodeButton.setLayoutX(BUTTON_RIGHT_POSITION_X);
-        selectNodeButton.setLayoutY(BUTTON_POSITION_Y);
-        mainPane.getChildren().add(selectNodeButton);
+        buttonLayout.getChildren().add(selectNodeButton);
         selectNodeButton.setOnAction(actionEvent -> {
             isSelectingNode = true;
             isDrawingNode = false;
@@ -130,6 +135,7 @@ public class ViewManager {
             }
         }
     }
+
 
     /**
      * Sets the background to an off-white.

@@ -1,5 +1,6 @@
 package com.example.graphtheorysimulator;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 
 public class MenuButton extends Button {
@@ -12,8 +13,9 @@ public class MenuButton extends Button {
      */
     public MenuButton(String text) {
         setText(text);
-        setPrefWidth(BUTTON_WIDTH);
-        setPrefHeight(BUTTON_HEIGHT);
+        //setPrefWidth();
+        //setPrefHeight(BUTTON_HEIGHT);
+        setPadding(new Insets(20));
     }
 
 }
