@@ -1,5 +1,9 @@
 package com.example.graphtheorysimulator;
 
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -56,6 +60,30 @@ public class Node extends Circle {
         if (isNodeSelected) {
             nodeStack.getChildren().remove(selectBox);
         }
+    }
+
+    public void moveNodeWithMouse(Scene scene){
+        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                drawSelectBox();
+                if(!mouseEvent.isControlDown()){
+                    nodeStack.setLayoutX(mouseEvent.getSceneX()-DEFAULT_RADIUS);
+                    nodeStack.setLayoutY(mouseEvent.getSceneY()-DEFAULT_RADIUS);
+                }
+                //deselectNode();
+            }
+        });
+        //deselectNode();
+    }
+
+    public void stopNodeMove(Scene scene){
+        scene.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+            @Override
+            public void handle(MouseDragEvent mouseDragEvent) {
+                deselectNode();
+            }
+        });
     }
 
     /**

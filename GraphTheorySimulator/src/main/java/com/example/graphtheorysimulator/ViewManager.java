@@ -1,9 +1,13 @@
 package com.example.graphtheorysimulator;
 
 import java.util.ArrayList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -112,6 +116,28 @@ public class ViewManager {
             isSelectingNode = true;
             isDrawingNode = false;
             createMouseListenersForNode();
+            //mouseDragListeners();
+        });
+    }
+
+    private void mouseDragListeners(){
+        mainScene.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                double x = mouseEvent.getX();
+                double y = mouseEvent.getY();
+                if(!mouseEvent.isControlDown()){
+                    selectNode(x, y);
+                }
+            }
+        });
+
+        mainScene.setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent dragEvent) {
+                //mouseDragListeners();
+
+            }
         });
     }
 
@@ -131,8 +157,11 @@ public class ViewManager {
                 + (2 * radius)) {
                 selectedNode = node;
                 selectedNode.drawSelectBox();
+                selectedNode.moveNodeWithMouse(mainScene);
+                selectedNode.stopNodeMove(mainScene);
 
             }
+            //selectedNode.stopNodeMove(mainScene);
         }
     }
 
