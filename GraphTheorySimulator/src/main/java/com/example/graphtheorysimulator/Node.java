@@ -59,6 +59,7 @@ public class Node extends Circle {
     public void deselectNode() {
         if (isNodeSelected) {
             nodeStack.getChildren().remove(selectBox);
+            isNodeSelected = false;
         }
     }
 
@@ -66,22 +67,11 @@ public class Node extends Circle {
         scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                drawSelectBox();
+                //drawSelectBox();
                 if(!mouseEvent.isControlDown()){
                     nodeStack.setLayoutX(mouseEvent.getSceneX()-DEFAULT_RADIUS);
                     nodeStack.setLayoutY(mouseEvent.getSceneY()-DEFAULT_RADIUS);
                 }
-                //deselectNode();
-            }
-        });
-        //deselectNode();
-    }
-
-    public void stopNodeMove(Scene scene){
-        scene.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
-            @Override
-            public void handle(MouseDragEvent mouseDragEvent) {
-                deselectNode();
             }
         });
     }

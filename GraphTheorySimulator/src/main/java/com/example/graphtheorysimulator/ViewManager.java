@@ -24,9 +24,6 @@ import javafx.stage.Stage;
 public class ViewManager {
     private static final int WIDTH = 1024;
     private static final int HEIGHT = 760;
-    private static final int BUTTON_LEFT_POSITION_X = 25;
-    private static final int BUTTON_RIGHT_POSITION_X = 150;
-    private static final int BUTTON_POSITION_Y = 25;
     private static final Color BACKGROUND_COLOUR = Color.rgb(232, 232, 231);
     private final AnchorPane mainPane;
     private final Scene mainScene;
@@ -98,9 +95,6 @@ public class ViewManager {
                 double y = mouseEvent.getY();
                 if (isDrawingNode) {
                     createNewNode(x, y);
-                } else if (isSelectingNode) {
-                    selectNode(x, y);
-                    //selectBox(x, y);
                 }
             }
         });
@@ -115,29 +109,14 @@ public class ViewManager {
         selectNodeButton.setOnAction(actionEvent -> {
             isSelectingNode = true;
             isDrawingNode = false;
-            createMouseListenersForNode();
-            //mouseDragListeners();
-        });
-    }
-
-    private void mouseDragListeners(){
-        mainScene.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                double x = mouseEvent.getX();
-                double y = mouseEvent.getY();
-                if(!mouseEvent.isControlDown()){
+            mainScene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    double x = mouseEvent.getX();
+                    double y = mouseEvent.getY();
                     selectNode(x, y);
                 }
-            }
-        });
-
-        mainScene.setOnDragDone(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent dragEvent) {
-                //mouseDragListeners();
-
-            }
+            });
         });
     }
 
@@ -147,21 +126,18 @@ public class ViewManager {
      * @param y The y coordinate of mouse.
      */
     private void selectNode(double x, double y) {
-        Node selectedNode;
+        Node selectedNode = null;
         for (Node node : nodes) {
-            node.deselectNode();
+            //node.deselectNode();
             double layoutX = node.getNodeStackPane().getLayoutX();
             double layoutY = node.getNodeStackPane().getLayoutY();
             int radius = node.getNodeRadius();
-            if (x > layoutX && x < layoutX + (2 * radius) && y > layoutY && y < layoutY
-                + (2 * radius)) {
+            boolean inNode = x > layoutX && x < layoutX + (2 * radius) && y > layoutY && y < layoutY
+                + (2 * radius);
+            if (inNode) {
                 selectedNode = node;
-                selectedNode.drawSelectBox();
                 selectedNode.moveNodeWithMouse(mainScene);
-                selectedNode.stopNodeMove(mainScene);
-
             }
-            //selectedNode.stopNodeMove(mainScene);
         }
     }
 
